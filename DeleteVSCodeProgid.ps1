@@ -117,7 +117,7 @@ $extensions = @(
 )
 $IsAdmin = [bool](([System.Security.Principal.WindowsIdentity]::GetCurrent()).groups -match "S-1-5-32-544")
 if ($IsAdmin) {
-	$extensions | foreach { $p = "HKLM:\Software\Classes\" + $_ + "\OpenWithProgids"; Remove-ItemProperty -path $p -name VSCode -whatif }
+	$extensions | foreach { $p = "HKLM:\Software\Classes\" + $_ + "\OpenWithProgids"; Remove-ItemProperty -path $p -name VSCode }
 } else {
 	Write-Host "Sorry, this only works in an elevated PowerShell instance"
 }
