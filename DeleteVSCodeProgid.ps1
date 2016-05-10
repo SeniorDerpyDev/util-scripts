@@ -117,7 +117,9 @@ $extensions = @(
 )
 $IsAdmin = [bool](([System.Security.Principal.WindowsIdentity]::GetCurrent()).groups -match "S-1-5-32-544")
 if ($IsAdmin) {
-	$extensions | foreach { $p = "HKLM:\Software\Classes\" + $_ + "\OpenWithProgids"; Remove-ItemProperty -path $p -name VSCode }
+	New-PSDrive -Name HKCR -PSProvider Registry -Root HKEY_CLASSES_ROOT | Out-Null
+	$extensions | foreach { $p = "HKCR:\" + $_ + "\OpenWithProgids"; Remove-ItemProperty -path $p -name VSCode }
+	Remove-PSDrive -Name HKCR | Out-Null
 } else {
 	Write-Host "Sorry, this only works in an elevated PowerShell instance"
 }
