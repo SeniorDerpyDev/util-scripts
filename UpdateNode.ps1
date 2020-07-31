@@ -1,16 +1,23 @@
+Function DownloadFile($Uri, $OutFile)
+{
+	$path = Join-Path -Path $pwd -ChildPath $Outfile
+	$wc = New-Object System.Net.WebClient
+	$wc.DownloadFile($Uri, $path)
+}
+
 Function UpdateNodeJS
 {
 	$binUrl = "https://nodejs.org/dist/latest/win-x64/node.exe"
 	$shaUrl = "https://nodejs.org/dist/latest/SHASUMS256.txt"
 
-	Invoke-WebRequest -Uri $shaUrl -Outfile "signatures.txt"
+	DownloadFile -Uri $shaUrl -Outfile "signatures.txt"
 
 	if (Test-Path -Path "signatures.txt")
 	{
 		$sig = Get-Content "signatures.txt"| Where-Object { $_.Contains("win-x64/node.exe") }
 		$sig = $sig.Substring(0, 64)
 
-		Invoke-WebRequest -Uri $binUrl -Outfile "node.exe"
+		DownloadFile -Uri $binUrl -Outfile "node.exe"
 		if (Test-Path -Path "node.exe")
 		{
 			$shasum = (Get-FileHash -Path "node.exe" -Algorithm SHA256).Hash
